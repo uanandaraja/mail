@@ -31,24 +31,7 @@ import { useGmail } from "@/hooks/use-gmail";
 import { SearchBar } from "./search-bar";
 import { useAtomValue } from "jotai";
 
-interface MailProps {
-  accounts: {
-    label: string;
-    email: string;
-    icon: React.ReactNode;
-  }[];
-  mails: Mail[];
-  defaultLayout: number[] | undefined;
-  defaultCollapsed?: boolean;
-  navCollapsedSize: number;
-  muted?: boolean;
-}
-
-export function Mail({
-  defaultLayout,
-  defaultCollapsed,
-  navCollapsedSize,
-}: Omit<MailProps, "mails">) {
+export function Mail() {
   const { data: emails = [], isLoading, error } = useGmail();
   const [mail, setMail] = useMail();
   const [isCompact, setIsCompact] = React.useState(false);

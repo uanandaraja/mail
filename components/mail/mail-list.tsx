@@ -4,7 +4,6 @@ import { Mail } from "@/components/mail/data";
 import { Badge } from "@/components/ui/badge";
 import { BellOff } from "lucide-react";
 import { ComponentProps } from "react";
-import DOMPurify from "dompurify";
 import { cn } from "@/lib/utils";
 
 import { formatDate } from "@/utils/format-date";

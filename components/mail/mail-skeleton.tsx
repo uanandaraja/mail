@@ -4,7 +4,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { AlignVerticalSpaceAround, ListFilter, SquarePen } from "lucide-react";
+import { AlignVerticalSpaceAround, ListFilter } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { SidebarToggle } from "../ui/sidebar-toggle";
 import { Button } from "@/components/ui/button";
