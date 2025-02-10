@@ -1,5 +1,6 @@
 "use client";
 
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { PostHogProvider } from "posthog-js/react";
@@ -14,14 +15,18 @@ if (typeof window !== "undefined" && process.env.NEXT_PUBLIC_POSTHOG_KEY) {
   });
 }
 
+const queryClient = new QueryClient();
+
 export function Providers({ children, ...props }: React.ComponentProps<typeof NextThemesProvider>) {
   return (
-    <Provider>
-      <NextThemesProvider {...props}>
-        <PostHogProvider client={posthog}>
-          <SidebarProvider>{children}</SidebarProvider>
-        </PostHogProvider>
-      </NextThemesProvider>
-    </Provider>
+    <QueryClientProvider client={queryClient}>
+      <Provider>
+        <NextThemesProvider {...props}>
+          <PostHogProvider client={posthog}>
+            <SidebarProvider>{children}</SidebarProvider>
+          </PostHogProvider>
+        </NextThemesProvider>
+      </Provider>
+    </QueryClientProvider>
   );
 }
