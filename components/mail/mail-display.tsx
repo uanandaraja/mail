@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { useState, useEffect, useCallback } from "react";
 import { format } from "date-fns/format";
+import DOMPurify from "dompurify";
 import { cn } from "@/lib/utils";
 import React from "react";
 
@@ -235,8 +236,72 @@ export function MailDisplay({ mail, onClose, isMobile }: MailDisplayProps) {
 
             <Separator />
 
+            {/* TODO: this still doesn't look good */}
             <div className="px-8 py-4 pb-[200px]">
-              <div className="whitespace-pre-wrap text-sm leading-relaxed">{currentMail.text}</div>
+              {currentMail.isHtml ? (
+                <div
+                  className="prose prose-sm max-w-none overflow-x-auto dark:prose-invert"
+                  dangerouslySetInnerHTML={{
+                    __html: DOMPurify.sanitize(currentMail.text, {
+                      ADD_ATTR: ["target", "style", "class"],
+                      ADD_TAGS: ["iframe", "style"],
+                      ALLOWED_ATTR: [
+                        "href",
+                        "target",
+                        "src",
+                        "style",
+                        "class",
+                        "frameborder",
+                        "allowfullscreen",
+                        "width",
+                        "height",
+                        "border",
+                        "cellpadding",
+                        "cellspacing",
+                        "align",
+                        "bgcolor",
+                        "color",
+                        "colspan",
+                        "rowspan",
+                      ],
+                      ALLOWED_TAGS: [
+                        "a",
+                        "b",
+                        "br",
+                        "div",
+                        "h1",
+                        "h2",
+                        "h3",
+                        "h4",
+                        "h5",
+                        "h6",
+                        "i",
+                        "img",
+                        "li",
+                        "ol",
+                        "p",
+                        "span",
+                        "strong",
+                        "table",
+                        "tbody",
+                        "td",
+                        "th",
+                        "thead",
+                        "tr",
+                        "u",
+                        "ul",
+                        "style",
+                        "iframe",
+                        "font",
+                      ],
+                    }),
+                  }}
+                />
+              ) : (
+                <div className="whitespace-pre-wrap text-sm leading-relaxed">
+                  {currentMail.text}
+                </div>
+              )}
             </div>
           </div>
 

@@ -173,7 +173,20 @@ export const mails = [
   },
 ];
 
-export type Mail = (typeof mails)[number];
+export interface Mail {
+  id: string;
+  name: string;
+  email: string;
+  subject: string;
+  text: string;
+  date: string;
+  read: boolean;
+  labels: string[];
+  muted?: boolean;
+  isHtml?: boolean;
+}
+
+export type Account = (typeof accounts)[number];
 
 export const accounts = [
   {
@@ -213,8 +226,6 @@ export const accounts = [
     ),
   },
 ];
-
-export type Account = (typeof accounts)[number];
 
 export const contacts = [
   {

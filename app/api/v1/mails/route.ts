@@ -41,20 +41,34 @@ export async function GET() {
 
         // Get email body
         const parts = fullMessage.data.payload?.parts || [];
-        let body = fullMessage.data.payload?.body?.data || "";
+        let body = "";
+        let isHtml = false;
 
-        // If the message is multipart, find the text part
+        // If the message is multipart, try to find HTML first, then fallback to text
         if (parts.length > 0) {
-          const textPart = parts.find((part) => part.mimeType === "text/plain");
-          if (textPart && textPart.body?.data) {
-            body = textPart.body.data;
+          // First try to find HTML part
+          const htmlPart = parts.find((part) => part.mimeType === "text/html");
+          if (htmlPart && htmlPart.body?.data) {
+            body = htmlPart.body.data;
+            isHtml = true;
+          } else {
+            // Fallback to text part if no HTML
+            const textPart = parts.find((part) => part.mimeType === "text/plain");
+            if (textPart && textPart.body?.data) {
+              body = textPart.body.data;
+              isHtml = false;
+            }
           }
+        } else if (fullMessage.data.payload?.body?.data) {
+          // Handle non-multipart messages
+          body = fullMessage.data.payload.body.data;
+          isHtml = fullMessage.data.payload.mimeType === "text/html";
         }
 
         // Decode the body from base64
         const decodedBody = body
           ? decodeURIComponent(escape(atob(body.replace(/-/g, "+").replace(/_/g, "/"))))
-          : "";
+          : fullMessage.data.snippet || "";
 
         // Parse the from field to extract name and email
         const fromMatch = from.match(/(?:"?([^"]*)"?\s)?(?:<?(.+@[^>]+)>?)/);
@@ -78,6 +92,7 @@ export async function GET() {
           email,
           subject,
           text: decodedBody || fullMessage.data.snippet || "",
+          isHtml: isHtml,
           date,
           read: !fullMessage.data.labelIds?.includes("UNREAD"),
           labels,

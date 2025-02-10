@@ -1,15 +1,22 @@
-import { ComponentProps } from "react";
-
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useMail } from "@/components/mail/use-mail";
 import { Mail } from "@/components/mail/data";
 import { Badge } from "@/components/ui/badge";
 import { BellOff } from "lucide-react";
+import { ComponentProps } from "react";
+import DOMPurify from "dompurify";
 import { cn } from "@/lib/utils";
 
 import { formatDate } from "@/utils/format-date";
 import { tagsAtom, Tag } from "./use-tags";
 import { useAtomValue } from "jotai";
+
+// Helper function to strip HTML tags and decode entities
+function stripHtmlAndDecode(html: string): string {
+  // First create a temporary div to handle HTML entity decoding
+  const doc = new DOMParser().parseFromString(html, "text/html");
+  return doc.body.textContent || "";
+}
 
 interface MailListProps {
   items: Mail[];
@@ -96,7 +103,9 @@ export function MailList({ items, isCompact, onMailClick }: MailListProps) {
                 isCompact && mail.selected !== item.id ? "h-0" : "h-8",
               )}
             >
-              {item.text.substring(0, 300)}
+              {item.isHtml
+                ? stripHtmlAndDecode(item.text).substring(0, 300)
+                : item.text.substring(0, 300)}
             </div>
 
             <MailLabels
